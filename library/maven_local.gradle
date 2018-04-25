@@ -1,0 +1,9 @@
+apply plugin: 'maven'
+uploadArchives {
+    repositories.mavenDeployer {
+        pom.version = '1.0.0'
+        pom.artifactId = 'hmnetworklocal'
+        pom.groupId = 'com.bwton.android'
+        repository(url: "file:///Users/hjy/.m2/repository/")
+    }
+}
