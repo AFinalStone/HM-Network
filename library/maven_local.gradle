@@ -3,7 +3,7 @@ uploadArchives {
     repositories.mavenDeployer {
         pom.version = '1.0.0'
         pom.artifactId = 'hmnetworklocal'
-        pom.groupId = 'com.bwton.android'
+        pom.groupId = 'com.heima.iou'
         repository(url: "file:///Users/hjy/.m2/repository/")
     }
 }
