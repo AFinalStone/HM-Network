@@ -1,6 +1,8 @@
 package com.hm.iou.network;
 
 
+import android.text.TextUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,10 +42,16 @@ public class HttpReqManager {
     private Map<String, Object> mServiceMap;
 
     private Retrofit mRetrofitClient;
+    private Map<String, Retrofit> mRetrofitMap;
 
     private HttpReqManager(HttpRequestConfig config) {
         mConfig = config;
         mServiceMap = new HashMap<String, Object>();
+        mRetrofitMap = new HashMap<>();
+    }
+
+    public HttpRequestConfig getRequestConfig() {
+        return mConfig;
     }
 
     public void setUserId(String userId) {
@@ -83,11 +91,44 @@ public class HttpReqManager {
         }
     }
 
+    /**
+     * 针对api出现多个不同baseUrl时采用该方法
+     * TODO api不应该出现多个不同的域名，需要由服务端来规范。
+     *
+     * @param serviceClass
+     * @param baseUrl
+     * @param <S>
+     * @return
+     */
+    public <S> S getService(Class<S> serviceClass, String baseUrl) {
+        if (TextUtils.isEmpty(baseUrl)) {
+            return getService(serviceClass);
+        }
+        String key = serviceClass.getName() + baseUrl;
+        if(mServiceMap.containsKey(key)) {
+            return (S) mServiceMap.get(key);
+        } else {
+            S obj = createService(serviceClass);
+            //缓存起来
+            mServiceMap.put(key, obj);
+            return obj;
+        }
+    }
+
     private <S> S createService(Class<S> serviceClass) {
         if(mRetrofitClient == null) {
             mRetrofitClient = RetrofitFactory.createRetrofit(mConfig);
         }
         return mRetrofitClient.create(serviceClass);
+    }
+
+    private <S> S createService(Class<S> serviceClass, String baseUrl) {
+        Retrofit retrofit = mRetrofitMap.get(baseUrl);
+        if(retrofit == null) {
+            retrofit = RetrofitFactory.createRetrofit(mConfig, baseUrl);
+            mRetrofitMap.put(baseUrl, retrofit);
+        }
+        return retrofit.create(serviceClass);
     }
 
     public void resetConfig(String baseUrl) {

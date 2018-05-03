@@ -18,6 +18,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitFactory {
 
     public static Retrofit createRetrofit(HttpRequestConfig config) {
+        return createRetrofit(config, null);
+    }
+
+    /**
+     * 创建Retrofit对象
+     *
+     * @param config
+     * @param baseUrl 指定的baseUrl，如果传空值，则采用config里配置的baseUrl
+     * @return
+     */
+    public static Retrofit createRetrofit(HttpRequestConfig config, String baseUrl) {
         OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(config.getConnectTimeout(), config.getConnectTimeUnit())
                 .readTimeout(config.getReadTimeout(), config.getReadTimeUnit());
@@ -37,8 +48,12 @@ public class RetrofitFactory {
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
-        if (!TextUtils.isEmpty(config.getBaseUrl())) {
-            retrofitBuilder.baseUrl(config.getBaseUrl());
+        if (!TextUtils.isEmpty(baseUrl)) {
+            retrofitBuilder.baseUrl(baseUrl);
+        } else {
+            if (!TextUtils.isEmpty(config.getBaseUrl())) {
+                retrofitBuilder.baseUrl(config.getBaseUrl());
+            }
         }
         Retrofit retrofit = retrofitBuilder.build();
         return retrofit;

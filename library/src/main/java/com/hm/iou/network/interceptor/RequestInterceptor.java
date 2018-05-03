@@ -3,6 +3,7 @@ package com.hm.iou.network.interceptor;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
 
 import com.hm.iou.network.HttpRequestConfig;
 import com.hm.iou.network.R;
@@ -51,9 +52,8 @@ public class RequestInterceptor implements Interceptor {
                 .addHeader("osType", StringUtil.getUnnullString(mConfig.getOsType()))
                 .addHeader("osVer", StringUtil.getUnnullString(mConfig.getOsVersion()))
                 .addHeader("appVer", StringUtil.getUnnullString(mConfig.getAppVersion()))
-                .addHeader("rptGpsX", StringUtil.getUnnullString(mConfig.getGpsX()))
-                .addHeader("rptGpsY", StringUtil.getUnnullString(mConfig.getGpsY()))
-                .addHeader("rptIp", "");
+                .addHeader("rptGpsX", TextUtils.isEmpty(mConfig.getGpsX()) ? "0" : mConfig.getGpsX())
+                .addHeader("rptGpsY", TextUtils.isEmpty(mConfig.getGpsY()) ? "0" : mConfig.getGpsY());
 
         Request request = builder.build();
         try {

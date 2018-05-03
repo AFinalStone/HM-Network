@@ -37,5 +37,28 @@ public class MainActivity extends AppCompatActivity {
                         });
             }
         });
+
+        findViewById(R.id.btn_login).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String pwd = Md5.getMd5ByString("kaka123ac11");
+                HttpReqManager.getInstance().getService(TestService.class)
+                        .mobileLogin("15967132742", pwd)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<ResponseResult<UserInfo>>() {
+                            @Override
+                            public void accept(ResponseResult<UserInfo> userInfoResponseResult) throws Exception {
+
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+
+                            }
+                        });
+            }
+        });
+
     }
 }
