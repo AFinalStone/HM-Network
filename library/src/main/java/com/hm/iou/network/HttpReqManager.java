@@ -108,7 +108,7 @@ public class HttpReqManager {
         if(mServiceMap.containsKey(key)) {
             return (S) mServiceMap.get(key);
         } else {
-            S obj = createService(serviceClass);
+            S obj = createService(serviceClass, baseUrl);
             //缓存起来
             mServiceMap.put(key, obj);
             return obj;
