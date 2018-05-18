@@ -15,8 +15,7 @@ public class HttpRequestConfig {
     private boolean debug;
     private String baseUrl;
     private String deviceId;
-    private String osType;
-    private String osVersion;
+    private String appChannel;
     private String appVersion;
 
     private long readTimeout;
@@ -39,8 +38,7 @@ public class HttpRequestConfig {
         connectTimeout = builder.connectTimeout;
         connectTimeUnit = builder.connectTimeUnit;
         deviceId = builder.deviceId;
-        osType = builder.osType;
-        osVersion = builder.osVersion;
+        appChannel = builder.appChannel;
         userId = builder.userId;
         token = builder.token;
         appVersion = builder.appVersion;
@@ -58,12 +56,8 @@ public class HttpRequestConfig {
         return deviceId;
     }
 
-    public String getOsType() {
-        return osType;
-    }
-
-    public String getOsVersion() {
-        return osVersion;
+    public String getAppChannel() {
+        return appChannel;
     }
 
     public String getUmDeviceToken() {
@@ -139,8 +133,7 @@ public class HttpRequestConfig {
         private Context context;
         private boolean debug;
         private String deviceId;
-        private String osType;
-        private String osVersion;
+        private String appChannel;
         private String baseUrl;
         private String appVersion;
 
@@ -166,13 +159,8 @@ public class HttpRequestConfig {
             return this;
         }
 
-        public Builder setOsType(String osType) {
-            this.osType = osType;
-            return this;
-        }
-
-        public Builder setOsVersion(String osVersion) {
-            this.osVersion = osVersion;
+        public Builder setAppChannel(String appChannel) {
+            this.appChannel = appChannel;
             return this;
         }
 

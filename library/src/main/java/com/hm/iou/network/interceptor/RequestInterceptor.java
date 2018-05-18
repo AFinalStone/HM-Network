@@ -3,6 +3,7 @@ package com.hm.iou.network.interceptor;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.hm.iou.network.HttpRequestConfig;
@@ -40,7 +41,6 @@ public class RequestInterceptor implements Interceptor {
         Request.Builder builder = chain.request()
                 .newBuilder()
                 .addHeader("Accept-Encoding", "gzip, deflate")
-                .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .addHeader("Connection", "keep-alive")
                 .addHeader("Accept", "application/json")
                 .addHeader("deviceId", mConfig.getDeviceId())
@@ -49,8 +49,10 @@ public class RequestInterceptor implements Interceptor {
                 .addHeader("id", StringUtil.getUnnullString(mConfig.getUserId()))
                 .addHeader("token", StringUtil.getUnnullString(mConfig.getToken()))
                 .addHeader("umDeviceToken", "")
-                .addHeader("osType", StringUtil.getUnnullString(mConfig.getOsType()))
-                .addHeader("osVer", StringUtil.getUnnullString(mConfig.getOsVersion()))
+                .addHeader("osType", "Android")
+                .addHeader("osVer", Build.VERSION.RELEASE)
+                .addHeader("appChannel", mConfig.getAppChannel())
+                .addHeader("deviceType", Build.BRAND + " " + Build.MODEL)
                 .addHeader("appVer", StringUtil.getUnnullString(mConfig.getAppVersion()))
                 .addHeader("rptGpsX", TextUtils.isEmpty(mConfig.getGpsX()) ? "0" : mConfig.getGpsX())
                 .addHeader("rptGpsY", TextUtils.isEmpty(mConfig.getGpsY()) ? "0" : mConfig.getGpsY());

@@ -21,8 +21,7 @@ public class NetApplication extends Application {
         System.out.println("init-----------");
         HttpRequestConfig config = new HttpRequestConfig.Builder(this)
                 .setDebug(true)
-                .setOsType("android")
-                .setOsVersion("19")
+                .setAppChannel("yyb")
                 .setAppVersion("1.0.2")
                 .setDeviceId("123abc123")
                 .setBaseUrl("http://192.168.1.254:5053/")

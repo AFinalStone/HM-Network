@@ -1,5 +1,7 @@
 package com.hm.iou.network.demo;
 
+import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -20,6 +22,12 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Context context = getApplicationContext();
+                System.out.println("brand = " + Build.BRAND);
+                System.out.println("manfacturer = " + Build.MANUFACTURER);
+                System.out.println("release = " + Build.VERSION.RELEASE);
+                System.out.println("model = " + Build.MODEL);
+
                 HttpReqManager.getInstance().getService(TestService.class)
                         .appInit("android", "19", "1.0.2")
                         .subscribeOn(Schedulers.io())
