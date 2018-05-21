@@ -51,7 +51,7 @@ public class RequestInterceptor implements Interceptor {
                 .addHeader("umDeviceToken", "")
                 .addHeader("osType", "Android")
                 .addHeader("osVer", Build.VERSION.RELEASE)
-                .addHeader("appChannel", mConfig.getAppChannel())
+                .addHeader("appChannel", StringUtil.getUnnullString(mConfig.getAppChannel()))
                 .addHeader("deviceType", Build.BRAND + " " + Build.MODEL)
                 .addHeader("appVer", StringUtil.getUnnullString(mConfig.getAppVersion()))
                 .addHeader("rptGpsX", TextUtils.isEmpty(mConfig.getGpsX()) ? "0" : mConfig.getGpsX())
