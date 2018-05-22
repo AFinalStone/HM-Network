@@ -49,7 +49,7 @@ public class RequestInterceptor implements Interceptor {
                 .addHeader("id", StringUtil.getUnnullString(mConfig.getUserId()))
                 .addHeader("token", StringUtil.getUnnullString(mConfig.getToken()))
                 .addHeader("umDeviceToken", "")
-                .addHeader("osType", "Android")
+                .addHeader("osType", "android")
                 .addHeader("osVer", Build.VERSION.RELEASE)
                 .addHeader("appChannel", StringUtil.getUnnullString(mConfig.getAppChannel()))
                 .addHeader("deviceType", Build.BRAND + " " + Build.MODEL)
