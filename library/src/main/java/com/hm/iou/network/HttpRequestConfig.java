@@ -1,6 +1,7 @@
 package com.hm.iou.network;
 
 import android.content.Context;
+import android.os.Build;
 import android.text.TextUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -42,6 +43,7 @@ public class HttpRequestConfig {
         userId = builder.userId;
         token = builder.token;
         appVersion = builder.appVersion;
+        umDeviceToken = builder.umDeviceToken;
     }
 
     public Context getContext() {
@@ -144,6 +146,7 @@ public class HttpRequestConfig {
 
         private String userId;
         private String token;
+        private String umDeviceToken;
 
         public Builder(Context context) {
             this.context = context.getApplicationContext();
@@ -193,6 +196,11 @@ public class HttpRequestConfig {
 
         public Builder setAppVersion(String appVersion) {
             this.appVersion = appVersion;
+            return this;
+        }
+
+        public Builder setUmDeviceToken(String umDeviceToken) {
+            this.umDeviceToken = umDeviceToken;
             return this;
         }
 

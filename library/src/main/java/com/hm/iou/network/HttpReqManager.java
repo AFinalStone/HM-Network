@@ -74,6 +74,15 @@ public class HttpReqManager {
     }
 
     /**
+     * 设置友盟deviceToken
+     *
+     * @param umDeviceToken
+     */
+    public void setUmDeviceToken(String umDeviceToken) {
+        mConfig.setUmDeviceToken(umDeviceToken);
+    }
+
+    /**
      * 创建retrofit api service实例
      *
      * @param serviceClass retrofit service

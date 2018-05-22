@@ -48,7 +48,6 @@ public class RequestInterceptor implements Interceptor {
                 .addHeader("operKind", "CUSTOMER")
                 .addHeader("id", StringUtil.getUnnullString(mConfig.getUserId()))
                 .addHeader("token", StringUtil.getUnnullString(mConfig.getToken()))
-                .addHeader("umDeviceToken", "")
                 .addHeader("osType", "android")
                 .addHeader("osVer", Build.VERSION.RELEASE)
                 .addHeader("appChannel", StringUtil.getUnnullString(mConfig.getAppChannel()))
@@ -56,6 +55,10 @@ public class RequestInterceptor implements Interceptor {
                 .addHeader("appVer", StringUtil.getUnnullString(mConfig.getAppVersion()))
                 .addHeader("rptGpsX", TextUtils.isEmpty(mConfig.getGpsX()) ? "0" : mConfig.getGpsX())
                 .addHeader("rptGpsY", TextUtils.isEmpty(mConfig.getGpsY()) ? "0" : mConfig.getGpsY());
+
+        if (!TextUtils.isEmpty(mConfig.getUmDeviceToken())) {
+            builder.addHeader("umDeviceToken", mConfig.getUmDeviceToken());
+        }
 
         Request request = builder.build();
         try {
