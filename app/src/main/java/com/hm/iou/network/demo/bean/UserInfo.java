@@ -1,4 +1,4 @@
-package com.hm.iou.network.demo;
+package com.hm.iou.network.demo.bean;
 
 /**
  * Created by hjy on 18/4/26.<br>

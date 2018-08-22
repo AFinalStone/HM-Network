@@ -4,21 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <Button
         android:id="@+id/btn_test"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="测试"
-        />
+        android:text="测试" />
 
     <Button
         android:id="@+id/btn_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="登录"
-        />
+        android:text="登录" />
+
+    <Button
+        android:id="@+id/btn_checkVersion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="检查更新" />
+
+    <Button
+        android:id="@+id/btn_downFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="下载文件" />
 
 </LinearLayout>

@@ -3,6 +3,8 @@ package com.hm.iou.network;
 
 import android.text.TextUtils;
 
+import com.hm.iou.network.interceptor.file.ProgressListener;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,10 +19,9 @@ public class HttpReqManager {
 
     /**
      * 初始化
-     *
      */
     public static void init(HttpRequestConfig config) {
-        if(config == null) {
+        if (config == null) {
             throw new IllegalArgumentException("RequestConfig cannot be null.");
         }
         INSTANCE = new HttpReqManager(config);
@@ -32,7 +33,7 @@ public class HttpReqManager {
      * @return
      */
     public static HttpReqManager getInstance() {
-        if(INSTANCE == null) {
+        if (INSTANCE == null) {
             throw new IllegalArgumentException("Must call init() method before call this.");
         }
         return INSTANCE;
@@ -42,6 +43,7 @@ public class HttpReqManager {
     private Map<String, Object> mServiceMap;
 
     private Retrofit mRetrofitClient;
+    private Retrofit mRetrofitFileClient;
     private Map<String, Retrofit> mRetrofitMap;
 
     private HttpReqManager(HttpRequestConfig config) {
@@ -90,7 +92,7 @@ public class HttpReqManager {
      * @return
      */
     public <S> S getService(Class<S> serviceClass) {
-        if(mServiceMap.containsKey(serviceClass.getName())) {
+        if (mServiceMap.containsKey(serviceClass.getName())) {
             return (S) mServiceMap.get(serviceClass.getName());
         } else {
             S obj = createService(serviceClass);
@@ -114,7 +116,7 @@ public class HttpReqManager {
             return getService(serviceClass);
         }
         String key = serviceClass.getName() + baseUrl;
-        if(mServiceMap.containsKey(key)) {
+        if (mServiceMap.containsKey(key)) {
             return (S) mServiceMap.get(key);
         } else {
             S obj = createService(serviceClass, baseUrl);
@@ -124,8 +126,29 @@ public class HttpReqManager {
         }
     }
 
+    /**
+     * 针对api需要监听请求结果进度的请求
+     * TODO 文件下载需要监听进度
+     *
+     * @param serviceClass
+     * @param listener
+     * @param <S>
+     * @return
+     */
+    public <S> S getService(Class<S> serviceClass, ProgressListener listener) {
+        String key = serviceClass.getName() + listener;
+        if (mServiceMap.containsKey(key)) {
+            return (S) mServiceMap.get(key);
+        } else {
+            S obj = createService(serviceClass, listener);
+            //缓存起来
+            mServiceMap.put(key, obj);
+            return obj;
+        }
+    }
+
     private <S> S createService(Class<S> serviceClass) {
-        if(mRetrofitClient == null) {
+        if (mRetrofitClient == null) {
             mRetrofitClient = RetrofitFactory.createRetrofit(mConfig);
         }
         return mRetrofitClient.create(serviceClass);
@@ -133,11 +156,18 @@ public class HttpReqManager {
 
     private <S> S createService(Class<S> serviceClass, String baseUrl) {
         Retrofit retrofit = mRetrofitMap.get(baseUrl);
-        if(retrofit == null) {
+        if (retrofit == null) {
             retrofit = RetrofitFactory.createRetrofit(mConfig, baseUrl);
             mRetrofitMap.put(baseUrl, retrofit);
         }
         return retrofit.create(serviceClass);
+    }
+
+    private <S> S createService(Class<S> serviceClass, ProgressListener listener) {
+        if (mRetrofitFileClient == null) {
+            mRetrofitFileClient = RetrofitFactory.createRetrofit(mConfig, listener);
+        }
+        return mRetrofitFileClient.create(serviceClass);
     }
 
     public void resetConfig(String baseUrl) {
