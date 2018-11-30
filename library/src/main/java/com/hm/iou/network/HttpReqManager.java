@@ -64,6 +64,10 @@ public class HttpReqManager {
         mConfig.setToken(token);
     }
 
+    public void setAuthorization(String authorization) {
+        mConfig.setAuthorization(authorization);
+    }
+
     /**
      * 更新设置经纬度
      *

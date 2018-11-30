@@ -1,7 +1,6 @@
 package com.hm.iou.network;
 
 import android.content.Context;
-import android.os.Build;
 import android.text.TextUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -18,6 +17,7 @@ public class HttpRequestConfig {
     private String deviceId;
     private String appChannel;
     private String appVersion;
+    private String authorization;//信用人生游戏单独使用的字段
 
     private long readTimeout;
     private TimeUnit readTimeUnit;
@@ -42,6 +42,7 @@ public class HttpRequestConfig {
         appChannel = builder.appChannel;
         userId = builder.userId;
         token = builder.token;
+        authorization = builder.authorization;
         appVersion = builder.appVersion;
         umDeviceToken = builder.umDeviceToken;
     }
@@ -72,6 +73,14 @@ public class HttpRequestConfig {
 
     public String getToken() {
         return token;
+    }
+
+    public String getAuthorization() {
+        return authorization;
+    }
+
+    public void setAuthorization(String authorization) {
+        this.authorization = authorization;
     }
 
     public String getGpsX() {
@@ -138,6 +147,7 @@ public class HttpRequestConfig {
         private String appChannel;
         private String baseUrl;
         private String appVersion;
+        private String authorization;//信用人生游戏单独使用的字段
 
         private long readTimeout;
         private TimeUnit readTimeUnit;
@@ -191,6 +201,11 @@ public class HttpRequestConfig {
 
         public Builder setToken(String token) {
             this.token = token;
+            return this;
+        }
+
+        public Builder setAuthorization(String authorization) {
+            this.authorization = authorization;
             return this;
         }
 

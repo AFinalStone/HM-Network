@@ -20,7 +20,7 @@ import okhttp3.Response;
 
 /**
  * Created by hjy on 18/4/25.<br>
- *
+ * <p>
  * 添加公用请求头信息拦截器
  */
 
@@ -35,7 +35,7 @@ public class RequestInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         //如果没有联网, 则直接抛出异常
-        if(!isConnected(mConfig.getContext())) {
+        if (!isConnected(mConfig.getContext())) {
             throw new NoNetworkException(mConfig.getContext().getString(R.string.net_no_network));
         }
         Request.Builder builder = chain.request()
@@ -48,6 +48,7 @@ public class RequestInterceptor implements Interceptor {
                 .addHeader("operKind", "CUSTOMER")
                 .addHeader("id", StringUtil.getUnnullString(mConfig.getUserId()))
                 .addHeader("token", StringUtil.getUnnullString(mConfig.getToken()))
+                .addHeader("Authorization", StringUtil.getUnnullString(mConfig.getAuthorization()))
                 .addHeader("osType", "android")
                 .addHeader("osVer", Build.VERSION.RELEASE)
                 .addHeader("appChannel", StringUtil.getUnnullString(mConfig.getAppChannel()))
