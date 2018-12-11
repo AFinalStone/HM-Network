@@ -35,14 +35,12 @@ public class RetrofitFactory {
                 .connectTimeout(config.getConnectTimeout(), config.getConnectTimeUnit())
                 .readTimeout(config.getReadTimeout(), config.getReadTimeUnit());
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        if (config.isDebug()) {
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        } else {
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
-        }
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         okHttpClientBuilder.addInterceptor(new RequestInterceptor(config));
         okHttpClientBuilder.addInterceptor(new ResponseInterceptor(config));
-        okHttpClientBuilder.addInterceptor(loggingInterceptor);
+        if (config.isDebug()) {
+            okHttpClientBuilder.addInterceptor(loggingInterceptor);
+        }
         okHttpClientBuilder.retryOnConnectionFailure(true);
 
         OkHttpClient okHttpClient = okHttpClientBuilder.build();
@@ -72,14 +70,13 @@ public class RetrofitFactory {
                 .connectTimeout(config.getConnectTimeout(), config.getConnectTimeUnit())
                 .readTimeout(config.getReadTimeout(), config.getReadTimeUnit());
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-        if (config.isDebug()) {
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-        } else {
-            loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
-        }
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
         okHttpClientBuilder.addInterceptor(new RequestInterceptor(config));
         okHttpClientBuilder.addInterceptor(new FileResponseInterceptor(config, progressListener));
-        okHttpClientBuilder.addInterceptor(loggingInterceptor);
+        if (config.isDebug()) {
+            okHttpClientBuilder.addInterceptor(loggingInterceptor);
+        }
         okHttpClientBuilder.retryOnConnectionFailure(true);
 
         OkHttpClient okHttpClient = okHttpClientBuilder.build();

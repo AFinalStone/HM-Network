@@ -40,8 +40,6 @@ public class RequestInterceptor implements Interceptor {
         }
         Request.Builder builder = chain.request()
                 .newBuilder()
-                .addHeader("Accept-Encoding", "gzip, deflate")
-                .addHeader("Connection", "keep-alive")
                 .addHeader("Accept", "application/json")
                 .addHeader("deviceId", mConfig.getDeviceId())
                 .addHeader("rptTime", System.currentTimeMillis() + "")
