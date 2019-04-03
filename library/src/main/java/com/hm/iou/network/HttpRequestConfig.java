@@ -30,6 +30,8 @@ public class HttpRequestConfig {
     private String gpsX;
     private String gpsY;
 
+    private String bundleId;
+
     public HttpRequestConfig(Builder builder) {
         context = builder.context;
         baseUrl = builder.baseUrl;
@@ -45,6 +47,7 @@ public class HttpRequestConfig {
         authorization = builder.authorization;
         appVersion = builder.appVersion;
         umDeviceToken = builder.umDeviceToken;
+        bundleId = context.getPackageName();
     }
 
     public Context getContext() {
@@ -137,6 +140,10 @@ public class HttpRequestConfig {
 
     public String getAppVersion() {
         return appVersion;
+    }
+
+    public String getBundleId() {
+        return bundleId;
     }
 
     public static class Builder {

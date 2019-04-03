@@ -53,7 +53,8 @@ public class RequestInterceptor implements Interceptor {
                 .addHeader("deviceType", Build.BRAND + " " + Build.MODEL)
                 .addHeader("appVer", StringUtil.getUnnullString(mConfig.getAppVersion()))
                 .addHeader("rptGpsX", TextUtils.isEmpty(mConfig.getGpsX()) ? "0" : mConfig.getGpsX())
-                .addHeader("rptGpsY", TextUtils.isEmpty(mConfig.getGpsY()) ? "0" : mConfig.getGpsY());
+                .addHeader("rptGpsY", TextUtils.isEmpty(mConfig.getGpsY()) ? "0" : mConfig.getGpsY())
+                .addHeader("bundleId", StringUtil.getUnnullString(mConfig.getBundleId()));
 
         if (!TextUtils.isEmpty(mConfig.getUmDeviceToken())) {
             builder.addHeader("umDeviceToken", mConfig.getUmDeviceToken());
