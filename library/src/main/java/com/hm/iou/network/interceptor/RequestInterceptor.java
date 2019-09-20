@@ -8,15 +8,27 @@ import android.text.TextUtils;
 
 import com.hm.iou.network.HttpRequestConfig;
 import com.hm.iou.network.R;
+import com.hm.iou.network.exception.DecryptException;
 import com.hm.iou.network.exception.NetworkConnectionException;
 import com.hm.iou.network.exception.NoNetworkException;
+import com.hm.iou.network.exception.ResponseFailException;
 import com.hm.iou.network.utils.StringUtil;
+import com.hm.iou.tools.AesUtil;
+import com.hm.iou.tools.RsaUtil;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.internal.Util;
+import okhttp3.internal.http.RealResponseBody;
+import okio.Buffer;
+import okio.Okio;
+import okio.Source;
 
 /**
  * Created by hjy on 18/4/25.<br>
@@ -38,7 +50,8 @@ public class RequestInterceptor implements Interceptor {
         if (!isConnected(mConfig.getContext())) {
             throw new NoNetworkException(mConfig.getContext().getString(R.string.net_no_network));
         }
-        Request.Builder builder = chain.request()
+        Request originalRequest = chain.request();
+        Request.Builder builder = originalRequest
                 .newBuilder()
                 .addHeader("Accept", "application/json")
                 .addHeader("deviceId", mConfig.getDeviceId())
@@ -60,12 +73,54 @@ public class RequestInterceptor implements Interceptor {
             builder.addHeader("umDeviceToken", mConfig.getUmDeviceToken());
         }
 
+        //根据请求头标记，来判断是否需要进行加密传输
+        String isEncrypt = originalRequest.header("encrypt");
+        String aesEncryptKey = AesUtil.generateRandomKey();
+        String encryptKey = RsaUtil.encryptByPublicKey(aesEncryptKey, mConfig.getRsaPubKey());
+        builder.addHeader("random", StringUtil.getUnnullString(encryptKey));
+        builder.addHeader("pubVersion", StringUtil.getUnnullString(mConfig.getRsaPubVersion()));
+        //对需要加密的接口，先通过头信息"encrypt=1"来标识是否要加密
+        if ("1".equals(isEncrypt)) {
+            //只对 POST 请求，除文件上传之外的 body 体进行加密
+            String contentType = originalRequest.header("Content-Type");
+            if (originalRequest.method().toUpperCase().equals("POST") &&
+                    !(contentType != null && contentType.contains("multipart/form-data"))) {
+                Buffer buffer = new Buffer();
+                originalRequest.body().writeTo(buffer);
+                String reqStr = buffer.readString(Util.UTF_8);
+                reqStr = AesUtil.encryptEcb(reqStr, aesEncryptKey);
+                builder.post(RequestBody.create(MediaType.parse("application/json"), reqStr));
+            }
+        }
         Request request = builder.build();
+
+        Response response;
         try {
-            return chain.proceed(request);
-        } catch (IOException e) {
+            response = chain.proceed(request);
+        } catch (Exception e) {
             throw new NetworkConnectionException(mConfig.getContext().getString(R.string.net_network_error));
         }
+        if (!response.isSuccessful()) {
+            throw new ResponseFailException(mConfig.getContext().getString(R.string.net_network_error));
+        }
+
+        //根据 Response 里的头信息字段，来判断是否需要对 Response 里的内容进行解密
+        if (!TextUtils.isEmpty(aesEncryptKey) && "1".equals(response.header("encrypt"))) {
+            Response.Builder responseBuilder = response.newBuilder();
+            String resp = response.body().source().readString(Util.UTF_8);
+            resp = AesUtil.decryptECB(resp, aesEncryptKey);
+            //如果解密失败，则抛出异常
+            if (TextUtils.isEmpty(resp)) {
+                throw new DecryptException(mConfig.getContext().getString(R.string.net_decrypt_error));
+            }
+            responseBuilder.body(new RealResponseBody(response.headers(), Okio.buffer(buildNewSource(resp))));
+            return responseBuilder.build();
+        }
+        return response;
+    }
+
+    private Source buildNewSource(String resp) {
+        return Okio.source(new ByteArrayInputStream(resp.getBytes()));
     }
 
     /**

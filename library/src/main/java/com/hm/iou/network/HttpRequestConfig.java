@@ -32,6 +32,9 @@ public class HttpRequestConfig {
 
     private String bundleId;
 
+    private String rsaPubVersion;
+    private String rsaPubKey;
+
     public HttpRequestConfig(Builder builder) {
         context = builder.context;
         baseUrl = builder.baseUrl;
@@ -48,6 +51,8 @@ public class HttpRequestConfig {
         appVersion = builder.appVersion;
         umDeviceToken = builder.umDeviceToken;
         bundleId = context.getPackageName();
+        rsaPubVersion = builder.rsaPubVersion;
+        rsaPubKey = builder.rsaPubKey;
     }
 
     public Context getContext() {
@@ -146,6 +151,22 @@ public class HttpRequestConfig {
         return bundleId;
     }
 
+    public String getRsaPubVersion() {
+        return rsaPubVersion;
+    }
+
+    public void setRsaPubVersion(String rsaPubVersion) {
+        this.rsaPubVersion = rsaPubVersion;
+    }
+
+    public String getRsaPubKey() {
+        return rsaPubKey;
+    }
+
+    public void setRsaPubKey(String rsaPubKey) {
+        this.rsaPubKey = rsaPubKey;
+    }
+
     public static class Builder {
 
         private Context context;
@@ -164,6 +185,9 @@ public class HttpRequestConfig {
         private String userId;
         private String token;
         private String umDeviceToken;
+
+        private String rsaPubVersion;
+        private String rsaPubKey;
 
         public Builder(Context context) {
             this.context = context.getApplicationContext();
@@ -223,6 +247,16 @@ public class HttpRequestConfig {
 
         public Builder setUmDeviceToken(String umDeviceToken) {
             this.umDeviceToken = umDeviceToken;
+            return this;
+        }
+
+        public Builder setRsaPubVersion(String pubVersion) {
+            this.rsaPubVersion = pubVersion;
+            return this;
+        }
+
+        public Builder setRsaPubKey(String pubKey) {
+            this.rsaPubKey = pubKey;
             return this;
         }
 

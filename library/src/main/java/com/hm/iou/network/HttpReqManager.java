@@ -79,6 +79,7 @@ public class HttpReqManager {
         mConfig.setGpsY(gpsY);
     }
 
+
     /**
      * 设置友盟deviceToken
      *
@@ -86,6 +87,17 @@ public class HttpReqManager {
      */
     public void setUmDeviceToken(String umDeviceToken) {
         mConfig.setUmDeviceToken(umDeviceToken);
+    }
+
+    /**
+     * 更新 rsa 的版本号以及秘钥
+     *
+     * @param pubVersion
+     * @param pubKey
+     */
+    public void setRsaKey(String pubVersion, String pubKey) {
+        mConfig.setRsaPubVersion(pubVersion);
+        mConfig.setRsaPubKey(pubKey);
     }
 
     /**

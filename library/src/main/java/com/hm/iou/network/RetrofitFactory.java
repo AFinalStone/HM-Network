@@ -3,7 +3,6 @@ package com.hm.iou.network;
 import android.text.TextUtils;
 
 import com.hm.iou.network.interceptor.RequestInterceptor;
-import com.hm.iou.network.interceptor.ResponseInterceptor;
 import com.hm.iou.network.interceptor.file.FileResponseInterceptor;
 import com.hm.iou.network.interceptor.file.ProgressListener;
 
@@ -37,7 +36,6 @@ public class RetrofitFactory {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         okHttpClientBuilder.addInterceptor(new RequestInterceptor(config));
-        okHttpClientBuilder.addInterceptor(new ResponseInterceptor(config));
         if (config.isDebug()) {
             okHttpClientBuilder.addInterceptor(loggingInterceptor);
         }
