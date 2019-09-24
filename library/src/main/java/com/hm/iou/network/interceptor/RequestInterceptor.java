@@ -18,15 +18,17 @@ import com.hm.iou.tools.RsaUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
+import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.internal.Util;
-import okhttp3.internal.http.RealResponseBody;
+import okhttp3.ResponseBody;
 import okio.Buffer;
+import okio.BufferedSource;
 import okio.Okio;
 import okio.Source;
 
@@ -87,7 +89,7 @@ public class RequestInterceptor implements Interceptor {
                     !(contentType != null && contentType.contains("multipart/form-data"))) {
                 Buffer buffer = new Buffer();
                 originalRequest.body().writeTo(buffer);
-                String reqStr = buffer.readString(Util.UTF_8);
+                String reqStr = buffer.readString(Charset.forName("UTF-8"));
                 reqStr = AesUtil.encryptEcb(reqStr, aesEncryptKey);
                 builder.post(RequestBody.create(MediaType.parse("application/json"), reqStr));
             }
@@ -107,7 +109,7 @@ public class RequestInterceptor implements Interceptor {
         //根据 Response 里的头信息字段，来判断是否需要对 Response 里的内容进行解密
         if (!TextUtils.isEmpty(aesEncryptKey) && "1".equals(response.header("encrypt"))) {
             Response.Builder responseBuilder = response.newBuilder();
-            String resp = response.body().source().readString(Util.UTF_8);
+            String resp = response.body().source().readString(Charset.forName("UTF-8"));
             resp = AesUtil.decryptECB(resp, aesEncryptKey);
             //如果解密失败，则抛出异常
             if (TextUtils.isEmpty(resp)) {
@@ -143,6 +145,39 @@ public class RequestInterceptor implements Interceptor {
             }
         }
         return false;
+    }
+
+    public final class RealResponseBody extends ResponseBody {
+
+        private final Headers headers;
+        private final BufferedSource source;
+
+        public RealResponseBody(Headers headers, BufferedSource source) {
+            this.headers = headers;
+            this.source = source;
+        }
+
+        @Override public MediaType contentType() {
+            String contentType = headers.get("Content-Type");
+            return contentType != null ? MediaType.parse(contentType) : null;
+        }
+
+        @Override public long contentLength() {
+            return stringToLong(headers.get("Content-Length"));
+        }
+
+        private long stringToLong(String s) {
+            if (s == null) return -1;
+            try {
+                return Long.parseLong(s);
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        }
+
+        @Override public BufferedSource source() {
+            return source;
+        }
     }
 
 }
