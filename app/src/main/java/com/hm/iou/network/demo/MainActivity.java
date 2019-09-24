@@ -32,9 +32,6 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -124,8 +121,8 @@ public class MainActivity extends AppCompatActivity {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Consumer<BaseResponse<UserInfo>>() {
                             @Override
-                            public void accept(BaseResponse<UserInfo> userInfoResponseResult) throws Exception {
-
+                            public void accept(BaseResponse<UserInfo> response) throws Exception {
+                                System.out.println(response);
                             }
                         }, new Consumer<Throwable>() {
                             @Override
