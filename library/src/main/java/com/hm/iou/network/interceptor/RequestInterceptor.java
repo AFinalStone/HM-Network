@@ -78,8 +78,8 @@ public class RequestInterceptor implements Interceptor {
         //根据请求头标记，来判断是否需要进行加密传输
         String isEncrypt = originalRequest.header("encrypt");
         String aesEncryptKey = AesUtil.generateRandomKey();
-        String encryptKey = RsaUtil.encryptByPublicKey(aesEncryptKey, mConfig.getRsaPubKey());
-        builder.addHeader("random", StringUtil.getUnnullString(encryptKey));
+        String encryptSigner = RsaUtil.encryptByPublicKey(aesEncryptKey, mConfig.getRsaPubKey());
+        builder.addHeader("random", StringUtil.getUnnullString(encryptSigner));
         builder.addHeader("pubVersion", StringUtil.getUnnullString(mConfig.getRsaPubVersion()));
         //对需要加密的接口，先通过头信息"encrypt=1"来标识是否要加密
         if ("1".equals(isEncrypt)) {
